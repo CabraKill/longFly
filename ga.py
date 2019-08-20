@@ -3,14 +3,14 @@ import numpy
 
 class corre:
 
-    def cal_pop_fitness(feedback):
+    def cal_pop_fitness(self,feedback):
         # Calculating the fitness value of each solution in the current population.
         # The fitness function caulcuates the sum of products between each input and its corresponding weight.
         # Since we look for the smallest Distance, lets put bellow 1 to get a higher value outside
-        fitness = numpy.sum(1/feedback['dist'], axis=1)
+        fitness = numpy.sum(feedback, axis=0)
         return fitness
 
-    def select_mating_pool(pop, fitness, num_parents):
+    def select_mating_pool(self,pop, fitness, num_parents):
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
         parents = numpy.empty((num_parents, pop.shape[1]))
         for parent_num in range(num_parents):
@@ -20,7 +20,7 @@ class corre:
             fitness[max_fitness_idx] = -99999999999
         return parents
 
-    def crossover(parents, offspring_size):
+    def crossover(self,parents, offspring_size):
         offspring = numpy.empty(offspring_size)
         # The point at which crossover takes place between two parents. Usually it is at the center.
         crossover_point = numpy.uint8(offspring_size[1]/2)
@@ -36,7 +36,7 @@ class corre:
             offspring[k, crossover_point:] = parents[parent2_idx, crossover_point:]
         return offspring
 
-    def mutation(offspring_crossover):
+    def mutation(self,offspring_crossover):
         # Mutation changes a single gene in each offspring randomly.
         for idx in range(offspring_crossover.shape[0]):
             # The random value to be added to the gene.
@@ -79,13 +79,13 @@ class corre:
     #Number of generations
     #num_generations = 200
 
-    def createGeneration(generation, feedback):
+    def createGeneration(self,generation, feedback):
         print("Generation : ", generation)
         # Measing the fitness of each chromosome in the population.
-        fitness = cal_pop_fitness(feedback)
+        fitness = self.cal_pop_fitness(feedback)
 
         # Selecting the best parents in the population for mating.
-        parents = select_mating_pool(new_population, fitness, 
+        parents = self.select_mating_pool(new_population, fitness, 
                                         num_parents_mating)
 
         # Generating next generation using crossover.

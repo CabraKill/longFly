@@ -35,33 +35,49 @@ def fisics():
         mappBackUp = mapp.copy()
         cellBackUp = cell.copy()
         butonsMatrixBackUp = app.butonsMatrix.copy()
+        feedback = []
         #Running a generation
-        while True:
-            print("Current gen: " + str(count))
-            #Back the variables up to work on the main variables
+        print("Current gen: " + str(count))
+        for z in range(0,run.sol_per_pop):
+            prefCurrent = run.new_population[z][-4:len(run.new_population[0])].tolist()
+            print("Atual preferencia" + str(prefCurrent))
             myMind.mapp = mapp.copy()
             myMind.cell = cell.copy()
-            dists = myMind.calcDist()
-            direction = myMind.moveDirection(dists,run.new_population[0][-4:len(run.new_population[0])].tolist())
-            if(direction == 0):
-                if(fisics_move_update(-1,0)):
+            #Run the genome
+            while True:
+                #Back the variables up to work on the main variables
+                dists = myMind.calcDist()
+                direction = myMind.moveDirection(dists,prefCurrent)
+                print("Direcao: " + str(direction))
+                if(direction == 0):
+                    if(not fisics_move_update(-1,0)):
+                        print("Final do gene")
+                        break
+                elif (direction == 1):
+                    if(not fisics_move_update(1,0)):
+                        print("Final do gene")
+                        break
+                elif direction == 2:
+                    if(not fisics_move_update(0,-1)):
+                        print("Final do gene")
+                        break
+                elif (direction == 3):
+                    if(not fisics_move_update(0,1)):
+                        print("Final do gene")
+                        break
+                elif(direction == 404):
+                    print("Final do gene")
                     break
-            elif (direction == 1):
-                if(fisics_move_update(1,0)):
-                    break
-            elif direction == 2:
-                if(fisics_move_update(0,-1)):
-                    break
-            elif direction == 3:
-                if(fisics_move_update(0,1)):
-                    break
-        time.sleep(0.001)
-        count += 1
-        currentDist = calcDist(cell,checkPoint)
-        run.createGeneration(count,currentDist)
-        mapp = mappBackUp.copy()
-        cell = cellBackUp.copy()
-        app.butonsMatrix = butonsMatrixBackUp.copy()
+                time.sleep(0.001)
+            time.sleep(0.5)
+            count += 1
+            currentDist = calcDist(cell,checkPoint)
+            currentDist = 1/currentDist
+            feedback.append(currentDist)
+            mapp = mappBackUp.copy()
+            cell = cellBackUp.copy()
+            app.butonsMatrix = butonsMatrixBackUp.copy()
+        run.createGeneration(count,feedback)
 
 def calcDist(a,b):
     x1 = a[1]
@@ -73,17 +89,18 @@ def calcDist(a,b):
 
 def fisics_move_update(horizontal,vertical):
     #global app
+    print("Current cell: {} * h={} * v={}".format(myMind,horizontal,vertical))
 
     #Check if got the corner
-    if myMind.cell[0] +vertical >= globalHeight or myMind.cell[1] +horizontal >= globalWidth: 
+    if (myMind.cell[0] +vertical >= globalHeight) or (myMind.cell[1] +horizontal >= globalWidth): 
         return 0
     #Check if got a wall
-    elif mapp[cell[0] +vertical,cell[1]+horizontal] == 1:
+    elif mapp[myMind.cell[0] +vertical][myMind.cell[1]+horizontal] == 1:
         return 0
     #Since it's ok, update the grid
-    mapp[cell[0] + vertical,cell[1] + horizontal] == 2
-    app.butonsMatrix[cell[0] + vertical][cell[1] + horizontal]['bg'] = 'red'
-    mapp[cell[0] ,cell[1]] == 0
+    mapp[myMind.cell[0] + vertical][myMind.cell[1] + horizontal] == 2
+    app.butonsMatrix[myMind.cell[0] + vertical][myMind.cell[1] + horizontal]['bg'] = 'red'
+    mapp[cell[0]][cell[1]] = 0
     app.butonsMatrix[cell[0]][cell[1]]['bg'] = 'white'
     cell[0] += vertical
     cell[1] += horizontal
@@ -139,11 +156,12 @@ class Application:
         print("g.a. dá tchau")
         #print(mapp)
         #pk.dump(mapp,open("mapp.txt",'wb'))
+        #myFisics._stop()
         root.destroy()
 
-myFisics = th.Thread(target=fisics)
+myFisics = th.Thread(target=fisics, daemon=True)
 def startThread(self):
-    if(not myFisics.is_alive()):
+    if(not myFisics._is_stopped):
         myFisics.start()
     else:
         myFisics._stop()
