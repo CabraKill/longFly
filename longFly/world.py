@@ -1,0 +1,2 @@
+import mind
+#myMind = mind() 
