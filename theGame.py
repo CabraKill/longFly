@@ -89,7 +89,7 @@ def calcDist(a,b):
 
 def fisics_move_update(horizontal,vertical):
     #global app
-    print("Current cell: {} * h={} * v={}".format(myMind,horizontal,vertical))
+    print("Current cell: {} * h={} * v={}".format(myMind.cell,horizontal,vertical))
 
     #Check if got the corner
     if (myMind.cell[0] +vertical >= globalHeight) or (myMind.cell[1] +horizontal >= globalWidth): 
