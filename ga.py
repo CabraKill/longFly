@@ -85,7 +85,7 @@ class corre:
         fitness = self.cal_pop_fitness(feedback)
 
         # Selecting the best parents in the population for mating.
-        parents = self.select_mating_pool(new_population, fitness, 
+        parents = self.select_mating_pool(self.new_population, fitness, 
                                         num_parents_mating)
 
         # Generating next generation using crossover.
