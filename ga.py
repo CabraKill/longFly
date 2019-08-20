@@ -62,17 +62,18 @@ class corre:
     pop_size = (sol_per_pop,num_weights) # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
     #Creating the initial population.
     new_population = numpy.random.uniform(low=0, high=150, size=pop_size)
-    print("-Momento 0 da população-")
-    print(new_population)
+    #print("-Momento 0 da população-")
+    #print(new_population)
     
     for ii in range(0,sol_per_pop):
         freeOptions = [0,1,2,3]
         for i in range(1,5):
             new_population[ii][-i] = freeOptions[numpy.random.randint(0,len(freeOptions))]
-            print("-Momento 1 da população-")
-            print(new_population[ii])
-            print("*Numero para ser removido: " + str(new_population[ii][-i]) + "*")
+            #print("-Momento 1 da população-")
+            #print(new_population[ii])
+            #print("*Numero para ser removido: " + str(new_population[ii][-i]) + "*")
             freeOptions.remove(new_population[ii][-i])
+    print("First pop")
     print(new_population)
 
     #Number of generations

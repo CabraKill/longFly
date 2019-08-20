@@ -4,14 +4,14 @@ class mind:
         self.mapp = mapp.copy()
         #self.mapp[0] = mapp[1].copy()
         #self.mapp[1] = mapp[0].copy()
-        self.cell = cell
+        self.cell = cell.copy()
         self.checkPoint = checkPoint.copy()
         #self.checkPoint[1] = checkPoint[0].copy()
         #self.checkPoint[0] = checkPoint[1].copy()
         #self.weights = weights
 
     def calcDist(self):
-        dist = []
+        dist = [0,0,0,0]
         #First Position - left
         x = 0
         while True:#x <= cell[0]:
@@ -20,8 +20,8 @@ class mind:
                 dist[0] = self.cell[1]
                 break
             #Achieve the wall
-            elif self.mapp[self.cell[1] - x] == 1:
-                dist[0] == x
+            elif self.mapp[self.cell[0],self.cell[1] - x] == 1:
+                dist[0] = x
                 break
             else:
                 x+=1
@@ -29,12 +29,12 @@ class mind:
         x = 0
         while True:#x < len(mapp[0]):
             #Achieve the corner
-            if self.mapp[self.cell[1] + x]  >= len(self.mapp[1])-1:
+            if self.cell[1] + x >= len(self.mapp[1])-1:
                 dist[1] = x
                 break
             #Achieve the wall
-            elif self.mapp[self.cell[0] + x] == 1:
-                dist[1] == x
+            elif self.mapp[self.cell[0],self.cell[1] + x] == 1:
+                dist[1] = x
                 break
             else:
                 x+=1
@@ -42,12 +42,12 @@ class mind:
         y = 0
         while True:#x < len(mapp[0]):
             #Achieve the corner
-            if self.cell[1] == y:
+            if self.cell[0] == y:
                 dist[2] = y
                 break
             #Achieve the wall
-            elif self.mapp[self.cell[1] - y] == 1:
-                dist[2] == y
+            elif self.mapp[self.cell[0] - y,self.cell[1]] == 1:
+                dist[2] = y
                 break
             else:
                 y+=1
@@ -55,12 +55,12 @@ class mind:
         y = 0
         while True:#x < len(mapp[0]):
             #Achieve the corner
-            if self.mapp[self.cell[2] + y]  >= len(self.mapp[1])-1:
+            if self.cell[0] + y >= len(self.mapp[0])-1:
                 dist[3] = y
                 break
             #Achieve the wall
-            elif self.mapp[self.cell[1] + y] == 1:
-                dist[3] == y
+            elif self.mapp[self.cell[0] + y][self.cell[1]] == 1:
+                dist[3] = y
                 break
             else:
                 y+=1

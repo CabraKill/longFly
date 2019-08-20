@@ -7,7 +7,6 @@ import os.path
 import threading as th
 import time
 
-
 globalWidth = 20
 globalHeight = 20
 if not os.path.exists("mapp.txt"):
@@ -38,10 +37,12 @@ def fisics():
         butonsMatrixBackUp = app.butonsMatrix.copy()
         #Running a generation
         while True:
+            print("Current gen: " + str(count))
+            #Back the variables up to work on the main variables
             myMind.mapp = mapp.copy()
             myMind.cell = cell.copy()
             dists = myMind.calcDist()
-            direction = myMind.moveDirection(dists,run.new_population[0,len(run.new_population)-4-1])
+            direction = myMind.moveDirection(dists,run.new_population[0][-4:len(run.new_population[0])].tolist())
             if(direction == 0):
                 if(fisics_move_update(-1,0)):
                     break
@@ -56,20 +57,28 @@ def fisics():
                     break
         time.sleep(0.001)
         count += 1
-        currentDist = np.linalg.norm(cell-checkPoint)
+        currentDist = calcDist(cell,checkPoint)
         run.createGeneration(count,currentDist)
         mapp = mappBackUp.copy()
         cell = cellBackUp.copy()
         app.butonsMatrix = butonsMatrixBackUp.copy()
-        
+
+def calcDist(a,b):
+    x1 = a[1]
+    y1 = b[0]
+    x2 = b[1]
+    y2 = b[0]
+
+    return ((x2 - x1)**2 + (y2 - y1)**2)**(0.5)
+
 def fisics_move_update(horizontal,vertical):
     #global app
 
-    #Check if got a wall
-    if mapp[cell[0] +vertical,cell[1]+horizontal] == 1:
-        return 0
     #Check if got the corner
-    elif myMind.cell[0] +vertical == 0 or myMind.cell[1] +horizontal == 0: 
+    if myMind.cell[0] +vertical >= globalHeight or myMind.cell[1] +horizontal >= globalWidth: 
+        return 0
+    #Check if got a wall
+    elif mapp[cell[0] +vertical,cell[1]+horizontal] == 1:
         return 0
     #Since it's ok, update the grid
     mapp[cell[0] + vertical,cell[1] + horizontal] == 2
@@ -89,6 +98,7 @@ class Application:
         self.myGrid = self.ideMapp(master,globalWidth,globalHeight)
         self.myGrid.pack()
         self.button = Button(self.frame1,text="so vai")
+        self.button.bind("<Button-1>",startThread)
         #self.button.bind("<Button-1>",run.createGeneration(count))
         self.button.pack()
         pass
@@ -128,10 +138,15 @@ class Application:
     def onClose():
         print("g.a. dá tchau")
         #print(mapp)
-        pk.dump(mapp,open("mapp.txt",'wb'))
+        #pk.dump(mapp,open("mapp.txt",'wb'))
         root.destroy()
 
-myFisics = th.Thread(target=fisics,args=())
+myFisics = th.Thread(target=fisics)
+def startThread(self):
+    if(not myFisics.is_alive()):
+        myFisics.start()
+    else:
+        myFisics._stop()
 root = Tk()
 root.protocol("WM_DELETE_WINDOW",Application.onClose)
 app = Application(root)
