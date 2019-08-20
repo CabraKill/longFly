@@ -78,6 +78,7 @@ class corre:
 
     #Number of generations
     #num_generations = 200
+    
 
     def createGeneration(self,generation, feedback):
         print("Generation : ", generation)
