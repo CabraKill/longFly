@@ -55,21 +55,18 @@ def fisics():
                         break
                 elif (direction == 1):
                     if(not fisics_move_update(1,0)):
-                        print("Final do gene")
                         break
                 elif direction == 2:
                     if(not fisics_move_update(0,-1)):
-                        print("Final do gene")
                         break
                 elif (direction == 3):
                     if(not fisics_move_update(0,1)):
-                        print("Final do gene")
                         break
                 elif(direction == 404):
-                    print("Final do gene")
                     break
-                time.sleep(0.001)
-            time.sleep(1)
+                print("Final do gene")
+                time.sleep(1)
+            time.sleep(0.5)
             count += 1
             currentDist = calcDist(cell,checkPoint)
             currentDist = 1/currentDist
@@ -82,8 +79,8 @@ def fisics():
 
 def calcDist(a,b):
     x1 = a[1]
-    y1 = b[0]
-    x2 = b[1]
+    y1 = a[0]
+    x2 = a[1]
     y2 = b[0]
 
     return ((x2 - x1)**2 + (y2 - y1)**2)**(0.5)
@@ -92,10 +89,13 @@ def fisics_move_update(horizontal,vertical):
     #global app
     print("Current cell: {} * h={} * v={}".format(myMind.cell,horizontal,vertical))
 
-    #Check if got the corner
-    if (myMind.cell[0] +vertical >= globalHeight) or (myMind.cell[1] +horizontal >= globalWidth): 
+    #Check if It will get the vertical corner
+    if (myMind.cell[0] + vertical < 0) or (myMind.cell[0] + vertical >= globalHeight-1): 
         return 0
-    #Check if got a wall
+    #Check if It will ge the horizontal corner
+    if (myMind.cell[1] + horizontal < 0) or (myMind.cell[1] + horizontal > globalWidth-1): 
+        return 0
+    #Check if It will get a wall
     elif mapp[myMind.cell[0] +vertical][myMind.cell[1]+horizontal] == 1:
         return 0
     #Since it's ok, update the grid

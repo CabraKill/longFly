@@ -7,14 +7,16 @@ class corre:
         # Calculating the fitness value of each solution in the current population.
         # The fitness function caulcuates the sum of products between each input and its corresponding weight.
         # Since we look for the smallest Distance, lets put bellow 1 to get a higher value outside
-        print("cal_pop_fitness {}".format(feedback))
-        fitness = numpy.sum(feedback, axis=1)
+        print("cal_pop_fitness: {}".format(feedback))
+        fitness = numpy.sum(feedback, axis=0)
+        print("cal_pop_fitness after sum: {}".format(fitness))
         return fitness
 
     def select_mating_pool(self,pop, fitness, num_parents):
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
+        
         parents = numpy.empty((num_parents, pop.shape[1]))
-        print("select_mating_pool: {}".format(fitness))
+        print("select_mating_pool: {}".format(parents))        
         for parent_num in range(num_parents):
             max_fitness_idx = numpy.where(fitness == numpy.max(fitness))
             max_fitness_idx = max_fitness_idx[0][0]

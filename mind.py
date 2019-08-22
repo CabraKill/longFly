@@ -15,11 +15,11 @@ class mind:
         #First Position - left
         x = 0
         while True:#x <= cell[0]:
-            #Achieve the corner
-            if self.cell[1] == x:
+            #Find the corner
+            if self.cell[1] <= x:
                 dist[0] = self.cell[1]
                 break
-            #Achieve the wall
+            #Find a wall
             elif self.mapp[self.cell[0],self.cell[1] - x] == 1:
                 dist[0] = x
                 break
@@ -28,11 +28,11 @@ class mind:
         #Second Position - right
         x = 0
         while True:#x < len(mapp[0]):
-            #Achieve the corner
+            #Find the corner
             if self.cell[1] + x >= len(self.mapp[1])-1:
                 dist[1] = x
                 break
-            #Achieve the wall
+            #Find the wall
             elif self.mapp[self.cell[0],self.cell[1] + x] == 1:
                 dist[1] = x
                 break
@@ -41,11 +41,11 @@ class mind:
         #Third Position - Up
         y = 0
         while True:#x < len(mapp[0]):
-            #Achieve the corner
-            if self.cell[0] == y:
+            #Find the corner
+            if self.cell[0] <= y:
                 dist[2] = y
                 break
-            #Achieve the wall
+            #Find the wall
             elif self.mapp[self.cell[0] - y,self.cell[1]] == 1:
                 dist[2] = y
                 break
@@ -54,11 +54,11 @@ class mind:
         #Fourth Position - Down
         y = 0
         while True:#x < len(mapp[0]):
-            #Achieve the corner
+            #Find the corner
             if self.cell[0] + y >= len(self.mapp[0])-1:
                 dist[3] = y
                 break
-            #Achieve the wall
+            #Find the wall
             elif self.mapp[self.cell[0] + y][self.cell[1]] == 1:
                 dist[3] = y
                 break
@@ -67,7 +67,7 @@ class mind:
         return dist
     def moveDirection(self,dists,preferences):
         for i in range(0,4):
-            print("moveDirection: {}".format(preferences.index(i)))
+            #print("moveDirection: {}".format(preferences.index(i)))
             currentPref = preferences.index(i)
             if(self.canMove(dists[currentPref],preferences[currentPref])):
                 return currentPref
