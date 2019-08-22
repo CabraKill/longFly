@@ -8,15 +8,18 @@ class corre:
         # The fitness function caulcuates the sum of products between each input and its corresponding weight.
         # Since we look for the smallest Distance, lets put bellow 1 to get a higher value outside
         print("cal_pop_fitness: {}".format(feedback))
-        fitness = numpy.sum(feedback, axis=0)
-        print("cal_pop_fitness after sum: {}".format(fitness))
+        
+        # Since fitness now don't need a final work, it will be like it is.
+        #print("cal_pop_fitness after sum: {}".format(fitness))
+        #fitness = numpy.sum(feedback, axis=1)
+        fitness = feedback
         return fitness
 
     def select_mating_pool(self,pop, fitness, num_parents):
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
         
         parents = numpy.empty((num_parents, pop.shape[1]))
-        print("select_mating_pool: {}".format(parents))        
+        print("select_mating_pool parents: {}".format(parents))        
         for parent_num in range(num_parents):
             max_fitness_idx = numpy.where(fitness == numpy.max(fitness))
             max_fitness_idx = max_fitness_idx[0][0]
@@ -65,7 +68,7 @@ class corre:
     # Defining the population size.
     pop_size = (sol_per_pop,num_weights) # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
     #Creating the initial population.
-    new_population = numpy.random.uniform(low=0, high=150, size=pop_size)
+    new_population = numpy.random.uniform(low=0, high=50, size=pop_size)
     #print("-Momento 0 da população-")
     #print(new_population)
     
@@ -85,21 +88,21 @@ class corre:
 
     
 
-    def createGeneration(self,generation, feedback):
+    def createGeneration(self,generation, new_population, feedback):
         print("Generation : ", generation)
         # Measing the fitness of each chromosome in the population.
         fitness = self.cal_pop_fitness(feedback)
 
         # Selecting the best parents in the population for mating.
-        parents = self.select_mating_pool(self.new_population, fitness, 
+        parents = self.select_mating_pool(new_population, fitness, 
                                         self.num_parents_mating)
 
         # Generating next generation using crossover.
-        offspring_crossover = crossover(parents,
-                                        offspring_size=(pop_size[0]-parents.shape[0], num_weights))
+        offspring_crossover = self.crossover(parents,
+                                        offspring_size=(self.pop_size[0]-parents.shape[0], self.num_weights))
 
         # Adding some variations to the offsrping using mutation.
-        offspring_mutation = mutation(offspring_crossover)
+        offspring_mutation = self.mutation(offspring_crossover)
 
         # Creating the new population based on the parents and offspring.
         new_population[0:parents.shape[0], :] = parents

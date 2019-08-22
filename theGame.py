@@ -38,6 +38,7 @@ def fisics():
         feedback = []
         #Running a generation
         print("Current pop: " + str(count))
+        app.label['text'] = "Population: {}".format(count)
         for z in range(0,run.sol_per_pop):
             prefCurrent = run.new_population[z][-4:len(run.new_population[0])].tolist()
             print("Novo gene: {}. Atual preferencia: {}".format(z,prefCurrent))
@@ -48,10 +49,9 @@ def fisics():
                 myMind.cell = cell.copy()
                 dists = myMind.calcDist()
                 direction = myMind.moveDirection(dists,prefCurrent)
-                print("Distancias: {}. Direcao: {}".format(dists,direction))
+                #print("Distancias: {}. Direcao: {}".format(dists,direction))
                 if(direction == 0):
                     if(not fisics_move_update(-1,0)):
-                        print("Final do gene")
                         break
                 elif (direction == 1):
                     if(not fisics_move_update(1,0)):
@@ -64,10 +64,10 @@ def fisics():
                         break
                 elif(direction == 404):
                     break
-                print("Final do gene")
-                time.sleep(1)
-            time.sleep(0.5)
-            count += 1
+                #print("Final do gene")
+                time.sleep(0.5)
+            time.sleep(1)
+            
             currentDist = calcDist(cell,checkPoint)
             currentDist = 1/currentDist
             feedback.append(currentDist)
@@ -75,7 +75,10 @@ def fisics():
             mapp = mappBackUp.copy()
             cell = cellBackUp.copy()
             app.butonsMatrix = butonsMatrixBackUp.copy()
-        run.createGeneration(count,feedback)
+        count += 1
+        run.createGeneration(count,run.new_population, feedback)
+        print("****New pop:")
+        print(run.new_population)
 
 def calcDist(a,b):
     x1 = a[1]
@@ -87,7 +90,7 @@ def calcDist(a,b):
 
 def fisics_move_update(horizontal,vertical):
     #global app
-    print("Current cell: {} * h={} * v={}".format(myMind.cell,horizontal,vertical))
+    #print("Current cell: {} * h={} * v={}".format(myMind.cell,horizontal,vertical))
 
     #Check if It will get the vertical corner
     if (myMind.cell[0] + vertical < 0) or (myMind.cell[0] + vertical >= globalHeight-1): 
@@ -113,7 +116,7 @@ class Application:
     def __init__(self, master=None):
         self.frame1 = Frame(master)
         self.frame1.pack()
-        self.label = Label(self.frame1,text="oi")
+        self.label = Label(self.frame1,text="Gen: 0")
         self.label.pack()
         self.myGrid = self.ideMapp(master,globalWidth,globalHeight)
         self.myGrid.pack()
