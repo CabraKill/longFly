@@ -112,6 +112,7 @@ def fisics_move_update(horizontal,vertical):
     cell[1] += horizontal
     return 1
 
+
 class Application:
     def __init__(self, master=None):
         self.frame1 = Frame(master)
