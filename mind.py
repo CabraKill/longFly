@@ -66,14 +66,15 @@ class mind:
                 y+=1
         return dist
     def moveDirection(self,dists,preferences):
-        for i in range(0,3):
+        for i in range(0,4):
+            print("moveDirection: {}".format(preferences.index(i)))
             currentPref = preferences.index(i)
             if(self.canMove(dists[currentPref],preferences[currentPref])):
                 return currentPref
         return 404
     
     def canMove(self,dist,preference):
-        if preference >= dist:
+        if preference <= dist:
             return True
         else:
             return False

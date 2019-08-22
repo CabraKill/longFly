@@ -37,18 +37,18 @@ def fisics():
         butonsMatrixBackUp = app.butonsMatrix.copy()
         feedback = []
         #Running a generation
-        print("Current gen: " + str(count))
+        print("Current pop: " + str(count))
         for z in range(0,run.sol_per_pop):
             prefCurrent = run.new_population[z][-4:len(run.new_population[0])].tolist()
-            print("Atual preferencia" + str(prefCurrent))
+            print("Novo gene: {}. Atual preferencia: {}".format(z,prefCurrent))
             myMind.mapp = mapp.copy()
             myMind.cell = cell.copy()
             #Run the genome
             while True:
-                #Back the variables up to work on the main variables
+                myMind.cell = cell.copy()
                 dists = myMind.calcDist()
                 direction = myMind.moveDirection(dists,prefCurrent)
-                print("Direcao: " + str(direction))
+                print("Distancias: {}. Direcao: {}".format(dists,direction))
                 if(direction == 0):
                     if(not fisics_move_update(-1,0)):
                         print("Final do gene")
@@ -69,11 +69,12 @@ def fisics():
                     print("Final do gene")
                     break
                 time.sleep(0.001)
-            time.sleep(0.5)
+            time.sleep(1)
             count += 1
             currentDist = calcDist(cell,checkPoint)
             currentDist = 1/currentDist
             feedback.append(currentDist)
+            #Back the variables up to work on the main variables
             mapp = mappBackUp.copy()
             cell = cellBackUp.copy()
             app.butonsMatrix = butonsMatrixBackUp.copy()
@@ -98,10 +99,12 @@ def fisics_move_update(horizontal,vertical):
     elif mapp[myMind.cell[0] +vertical][myMind.cell[1]+horizontal] == 1:
         return 0
     #Since it's ok, update the grid
+    #Updates the new point
     mapp[myMind.cell[0] + vertical][myMind.cell[1] + horizontal] == 2
     app.butonsMatrix[myMind.cell[0] + vertical][myMind.cell[1] + horizontal]['bg'] = 'red'
-    mapp[cell[0]][cell[1]] = 0
-    app.butonsMatrix[cell[0]][cell[1]]['bg'] = 'white'
+    #Updates the current point
+    mapp[myMind.cell[0]][myMind.cell[1]] = 0
+    app.butonsMatrix[myMind.cell[0]][myMind.cell[1]]['bg'] = 'white'
     cell[0] += vertical
     cell[1] += horizontal
     return 1
