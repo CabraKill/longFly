@@ -16,16 +16,16 @@ class corre:
         return fitness
 
     def select_mating_pool(self,pop, fitness, num_parents):
-        pop2 = numpy.empty((5,4))
-        for i in range(len(pop)):
-            pop2[i] = pop[i][0:-4]
+        #pop2 = numpy.empty((5,4))
+        #for i in range(len(pop)):
+            #pop2[i] = pop[i][0:-4]
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
-        parents = numpy.empty((num_parents, pop2.shape[1]))
+        parents = numpy.empty((num_parents, pop.shape[1]))
         print("select_mating_pool parents: {}".format(parents))        
         for parent_num in range(num_parents):
             max_fitness_idx = numpy.where(fitness == numpy.max(fitness))
             max_fitness_idx = max_fitness_idx[0][0]
-            parents[parent_num, :] = pop2[max_fitness_idx, :]
+            parents[parent_num, :] = pop[max_fitness_idx, :]
             fitness[max_fitness_idx] = -99999999999
         print('select_mating_pool: fitness "{}"'.format(fitness))
         
@@ -49,18 +49,23 @@ class corre:
 
     def mutation(self,offspring_crossover):
         # Mutation changes a single gene in each offspring randomly.
-        for idx in range(offspring_crossover.shape[0]):
+        for idx in range(offspring_crossover.shape[0]-4):
             # The random value to be added to the gene.
             #------Check it later about mutation limits
             #random_value = numpy.random.uniform(-1.0, 1.0, 1)
-            random_value = numpy.random.uniform(0, 5.0, 1)
-            offspring_crossover[idx, 2] = offspring_crossover[idx, 2] + random_value
+            random_value = numpy.random.randint(-3, 3, 1)
+            random_index = numpy.random.randint(0,4,1)
+            #Code bellow I know works, but not so good
+            #offspring_crossover[idx, 2] = offspring_crossover[idx, 2] + random_value
+            offspring_crossover[idx, random_index] = offspring_crossover[idx, random_index] + random_value
+            if (offspring_crossover[idx, random_index] <= 0):
+                offspring_crossover[idx, random_index] = 0
         return offspring_crossover
 
     print("oi, sou o g.a.")
 
     # Number of the weights we are looking to optimize.
-    # The last 4 are the sequence of priority
+    # The last 4 are the sequence of movement priority
     num_weights = 8
 
     """
@@ -68,13 +73,16 @@ class corre:
         Mating pool size
         Population size
     """
-    sol_per_pop = 5
-    num_parents_mating = 2
+    sol_per_pop = 10
+    num_parents_mating = 4
+
+    bestDist = 111111
+    dist = 111111
 
     # Defining the population size.
     pop_size = (sol_per_pop,num_weights) # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
     #Creating the initial population.
-    new_population = numpy.random.uniform(low=0, high=10, size=pop_size)
+    new_population = numpy.random.randint(low=0, high=10, size=pop_size)
     #print("-Momento 0 da população-")
     #print(new_population)
     
@@ -116,6 +124,7 @@ class corre:
 
         # The best result in the current iteration.
         print("Best result : ", numpy.max(numpy.sum(new_population, axis=1)))
+        self.bestDist = numpy.min(fitness)
         
     # Getting the best solution after iterating finishing all generations.
     #At first, the fitness is calculated for each solution in the final generation.

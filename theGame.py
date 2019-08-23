@@ -39,17 +39,26 @@ def fisics():
         #Running a generation
         #print("Current pop: " + str(count))
         for z in range(0,run.sol_per_pop):
-            app.label['text'] = "Population: {}:{}".format(count,z)
+            if(app.listPop.size() > 0):
+                #for i in range(app.listPop.size()):
+                app.listPop.delete(0,app.listPop.size()-1)
+            app.labelCount['text'] = "Population: {}:{} | {}".format(count,z,app.listPop.size())
+            #app.listPop.insert(END,"Population: {}:{} || {}".format(count,z,app.listPop.size()))
             prefCurrent = run.new_population[z][-4:len(run.new_population[0])].tolist()
+            for p in range(len(run.new_population)):
+                text = '{},{}  {}'.format(run.new_population[p][0:-4],run.new_population[p][4:],'*' if z == p else '')
+                app.listPop.insert(END,text)
             #print("Novo gene: {}. Atual preferencia: {}".format(z,prefCurrent))
             myMind.mapp = mapp.copy()
             myMind.cell = cell.copy()
             #Run the genome
-            stepsLimits = 80
+            #A number to not be chosen
+            lasDirection = 100
+            stepsLimits = 120
             while True:
                 myMind.cell = cell.copy()
                 dists = myMind.calcDist()
-                direction = myMind.moveDirection(dists,run.new_population[z][0:-4],prefCurrent)
+                direction = myMind.moveDirection(dists,run.new_population[z][0:-4],prefCurrent,lasDirection)
                 #print("Distancias: {}. Direcao: {}".format(dists,direction))
                 if(direction == 0):
                     if(not fisics_move_update(-1,0)):
@@ -69,16 +78,30 @@ def fisics():
                 stepsLimits -=1
                 if(stepsLimits <= 0):
                     break
-                time.sleep(0.01)
-            time.sleep(1)
+                lasDirection = direction
+                if(app.listMatting.size() >= 30):
+                    for zz in range(20):
+                        app.listMatting.delete(zz)
+                
+                time.sleep(0.1)
             
             currentDist = calcDist(cell,checkPoint)
-            currentDist = 1/currentDist
+            run.dist = currentDist
+            app.listMatting.insert(END,str(run.dist))
+            if(currentDist != 0):
+                currentDist = 1/currentDist
+            else:
+                #Meaning that's enough
+                currentDist = 10
             feedback.append(currentDist)
+            time.sleep(1)
+            
+            
             #Back the variables up to work on the main variables
             mapp = mappBackUp.copy()
             cell = cellBackUp.copy()
             app.butonsMatrix = butonsMatrixBackUp.copy()
+        app.listMatting.insert(END, "Best Dist: " + str(run.bestDist))
         count += 1
         run.createGeneration(count,run.new_population, feedback)
         print("****New pop:")
@@ -120,16 +143,31 @@ def fisics_move_update(horizontal,vertical):
 class Application:
     def __init__(self, master=None):
         self.frame1 = Frame(master)
-        self.frame1.pack()
+        self.frame1.pack(expand=True,fill=BOTH)
         self.label = Label(self.frame1,text="Nathasha's LongFly")
         self.label.pack()
-        self.myGrid = self.ideMapp(master,globalWidth,globalHeight)
-        self.myGrid.pack()
+        self.labelCount = Label(self.frame1,text="----")
+        self.labelCount.pack()
         self.button = Button(self.frame1,text="so vai")
         self.button.bind("<Button-1>",startThread)
         #self.button.bind("<Button-1>",run.createGeneration(count))
         self.button.pack()
+        
+        self.workingPlace = Frame(master)
+        self.workingPlace.pack(expand=True,fill=BOTH)
+        self.myGrid = self.ideMapp(self.workingPlace,globalWidth,globalHeight)
+        self.myGrid.pack(side='left')
+        
+        self.dataFrame = Frame(self.workingPlace)
+        self.dataFrame.pack(side='right',fill=BOTH,expand=True)
+        self.listPop = self.myList(self.dataFrame)
+        self.listPop.pack(side='left',expand=True,fill=BOTH)
+        self.listMatting = self.myList(self.dataFrame)
+        self.listMatting.pack(side='left',expand=True,fill=BOTH)
         pass
+    
+    def myList(self,f):
+        return Listbox(f,fg='cyan',bg='black')#.pack(side='left',expand=True,fill=BOTH)
     
     butonsMatrix = [[0 for i in range(globalWidth)] for j in range(globalHeight)] 
     def ideMapp(self,master,xx,yy):

@@ -65,13 +65,17 @@ class mind:
             else:
                 y+=1
         return dist
-    def moveDirection(self,dists,limits,preferences):
+    def moveDirection(self,dists,limits,preferences,lastPref):
         for i in range(0,4):
             #print("moveDirection: {}".format(preferences.index(i)))
             currentPref = preferences.index(i)
+            
             #print('moveDirection: dists "{}" and limits "{}"'.format(dists,limits))
-            if(self.canMove(dists[currentPref],limits[currentPref])):
-                return currentPref
+            # Makes the cell not return the movement
+            if(not((lastPref == 0 and currentPref == 1) or (lastPref == 1 and currentPref == 0))):
+                if(not((lastPref == 2 and currentPref == 3) or (lastPref == 3 and currentPref == 2))):
+                    if(self.canMove(dists[currentPref],limits[currentPref])):
+                        return currentPref
         return 404
     
     def canMove(self,dist,limits):
