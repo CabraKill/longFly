@@ -65,19 +65,18 @@ class mind:
             else:
                 y+=1
         return dist
-    def moveDirection(self,dists,preferences):
-        
+    def moveDirection(self,dists,limits,preferences):
         for i in range(0,4):
             #print("moveDirection: {}".format(preferences.index(i)))
             currentPref = preferences.index(i)
-            print('moveDirection: dists "{}" and prefs "{}"'.format(dists,preferences))
-            if(self.canMove(dists[currentPref],preferences[currentPref])):
+            #print('moveDirection: dists "{}" and limits "{}"'.format(dists,limits))
+            if(self.canMove(dists[currentPref],limits[currentPref])):
                 return currentPref
         return 404
     
-    def canMove(self,dist,preference):
-        print('canMove: dist "{}" and prefe "{}"'.format(dist,preference))
-        if preference <= dist:
+    def canMove(self,dist,limits):
+        #print('canMove: dist "{}" and prefe "{}"'.format(dist,limits))
+        if limits <= dist:
             return True
         else:
             return False

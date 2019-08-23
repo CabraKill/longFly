@@ -37,18 +37,19 @@ def fisics():
         butonsMatrixBackUp = app.butonsMatrix.copy()
         feedback = []
         #Running a generation
-        print("Current pop: " + str(count))
-        app.label['text'] = "Population: {}".format(count)
+        #print("Current pop: " + str(count))
         for z in range(0,run.sol_per_pop):
+            app.label['text'] = "Population: {}:{}".format(count,z)
             prefCurrent = run.new_population[z][-4:len(run.new_population[0])].tolist()
-            print("Novo gene: {}. Atual preferencia: {}".format(z,prefCurrent))
+            #print("Novo gene: {}. Atual preferencia: {}".format(z,prefCurrent))
             myMind.mapp = mapp.copy()
             myMind.cell = cell.copy()
             #Run the genome
+            stepsLimits = 80
             while True:
                 myMind.cell = cell.copy()
                 dists = myMind.calcDist()
-                direction = myMind.moveDirection(dists,prefCurrent)
+                direction = myMind.moveDirection(dists,run.new_population[z][0:-4],prefCurrent)
                 #print("Distancias: {}. Direcao: {}".format(dists,direction))
                 if(direction == 0):
                     if(not fisics_move_update(-1,0)):
@@ -65,7 +66,10 @@ def fisics():
                 elif(direction == 404):
                     break
                 #print("Final do gene")
-                time.sleep(0.5)
+                stepsLimits -=1
+                if(stepsLimits <= 0):
+                    break
+                time.sleep(0.005)
             time.sleep(1)
             
             currentDist = calcDist(cell,checkPoint)
@@ -117,7 +121,7 @@ class Application:
     def __init__(self, master=None):
         self.frame1 = Frame(master)
         self.frame1.pack()
-        self.label = Label(self.frame1,text="Gen: 0")
+        self.label = Label(self.frame1,text="Nathasha's LongFly")
         self.label.pack()
         self.myGrid = self.ideMapp(master,globalWidth,globalHeight)
         self.myGrid.pack()

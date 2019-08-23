@@ -25,6 +25,7 @@ class corre:
             max_fitness_idx = max_fitness_idx[0][0]
             parents[parent_num, :] = pop[max_fitness_idx, :]
             fitness[max_fitness_idx] = -99999999999
+        print('"select_mating_pool: fitness "{}"'.format(fitness))
         return parents
 
     def crossover(self,parents, offspring_size):
@@ -47,7 +48,9 @@ class corre:
         # Mutation changes a single gene in each offspring randomly.
         for idx in range(offspring_crossover.shape[0]):
             # The random value to be added to the gene.
-            random_value = numpy.random.uniform(-1.0, 1.0, 1)
+            #------Check it later about mutation limits
+            #random_value = numpy.random.uniform(-1.0, 1.0, 1)
+            random_value = numpy.random.uniform(0, 10.0, 1)
             offspring_crossover[idx, 4] = offspring_crossover[idx, 4] + random_value
         return offspring_crossover
 
@@ -68,7 +71,7 @@ class corre:
     # Defining the population size.
     pop_size = (sol_per_pop,num_weights) # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
     #Creating the initial population.
-    new_population = numpy.random.uniform(low=0, high=50, size=pop_size)
+    new_population = numpy.random.uniform(low=0, high=10, size=pop_size)
     #print("-Momento 0 da população-")
     #print(new_population)
     
