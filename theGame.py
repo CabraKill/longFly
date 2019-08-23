@@ -69,7 +69,7 @@ def fisics():
                 stepsLimits -=1
                 if(stepsLimits <= 0):
                     break
-                time.sleep(0.005)
+                time.sleep(0.01)
             time.sleep(1)
             
             currentDist = calcDist(cell,checkPoint)

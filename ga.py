@@ -7,7 +7,7 @@ class corre:
         # Calculating the fitness value of each solution in the current population.
         # The fitness function caulcuates the sum of products between each input and its corresponding weight.
         # Since we look for the smallest Distance, lets put bellow 1 to get a higher value outside
-        print("cal_pop_fitness: {}".format(feedback))
+        print("cal_pop_fitness: feedback '{}'".format(feedback))
         
         # Since fitness now don't need a final work, it will be like it is.
         #print("cal_pop_fitness after sum: {}".format(fitness))
@@ -16,16 +16,19 @@ class corre:
         return fitness
 
     def select_mating_pool(self,pop, fitness, num_parents):
+        pop2 = numpy.empty((5,4))
+        for i in range(len(pop)):
+            pop2[i] = pop[i][0:-4]
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
-        
-        parents = numpy.empty((num_parents, pop.shape[1]))
+        parents = numpy.empty((num_parents, pop2.shape[1]))
         print("select_mating_pool parents: {}".format(parents))        
         for parent_num in range(num_parents):
             max_fitness_idx = numpy.where(fitness == numpy.max(fitness))
             max_fitness_idx = max_fitness_idx[0][0]
-            parents[parent_num, :] = pop[max_fitness_idx, :]
+            parents[parent_num, :] = pop2[max_fitness_idx, :]
             fitness[max_fitness_idx] = -99999999999
-        print('"select_mating_pool: fitness "{}"'.format(fitness))
+        print('select_mating_pool: fitness "{}"'.format(fitness))
+        
         return parents
 
     def crossover(self,parents, offspring_size):
@@ -50,8 +53,8 @@ class corre:
             # The random value to be added to the gene.
             #------Check it later about mutation limits
             #random_value = numpy.random.uniform(-1.0, 1.0, 1)
-            random_value = numpy.random.uniform(0, 10.0, 1)
-            offspring_crossover[idx, 4] = offspring_crossover[idx, 4] + random_value
+            random_value = numpy.random.uniform(0, 5.0, 1)
+            offspring_crossover[idx, 2] = offspring_crossover[idx, 2] + random_value
         return offspring_crossover
 
     print("oi, sou o g.a.")
@@ -66,7 +69,7 @@ class corre:
         Population size
     """
     sol_per_pop = 5
-    num_parents_mating = 5
+    num_parents_mating = 2
 
     # Defining the population size.
     pop_size = (sol_per_pop,num_weights) # The population will have sol_per_pop chromosome where each chromosome has num_weights genes.
