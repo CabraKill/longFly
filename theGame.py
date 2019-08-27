@@ -9,11 +9,12 @@ import time
 
 globalWidth = 20
 globalHeight = 20
-if not os.path.exists("mapp.txt"):
+locationMapp = "mappTest.txt"
+if not os.path.exists(locationMapp):
     mapp = np.zeros(shape=(globalWidth,globalHeight))
-    pk.dump(mapp,open("mapp.txt",'wb'))
+    pk.dump(mapp,open(locationMapp,'wb'))
 else:
-    mapp = pk.load(open("mapp.txt",'rb'))
+    mapp = pk.load(open(locationMapp,'rb'))
 #print(mapp)
 cell = [18,19]
 #Make cell red 
@@ -25,6 +26,69 @@ count = 0
 run = ga.corre()
 
 myMind = mind.mind(mapp,cell,checkPoint)
+
+def mindTester():
+    preferences = [3,1,2,4,0,2,1,3]
+    print("mindTester played")
+    global mapp
+    global cell
+    mappBackUp = mapp.copy()
+    cellBackUp = cell.copy()
+    butonsMatrixBackUp = app.butonsMatrix.copy()
+    myMind.mapp = mapp.copy()
+    myMind.cell = cell.copy()
+    #Run the gen
+    #A number to not be chosen
+    lasDirection = 100
+    #No step limits
+    #stepsLimits = 120
+    while True:
+        myMind.cell = cell.copy()
+        dists = myMind.calcDist()
+        direction = myMind.moveDirection(dists,preferences[0:-4],preferences[-4:],lasDirection)
+        #print("Distancias: {}. Direcao: {}".format(dists,direction))
+        if(direction == 0):
+            if(not fisics_move_update(-1,0)):
+                break
+        elif (direction == 1):
+            if(not fisics_move_update(1,0)):
+                break
+        elif direction == 2:
+            if(not fisics_move_update(0,-1)):
+                break
+        elif (direction == 3):
+            if(not fisics_move_update(0,1)):
+                break
+        elif(direction == 404):
+            break
+        #print("Final do gene")
+        #stepsLimits -=1
+        #if(stepsLimits <= 0):
+            #break
+        lasDirection = direction
+        if(app.listMatting.size() >= 30):
+            for zz in range(20):
+                app.listMatting.delete(zz)
+                
+        time.sleep(0.1)
+            
+    currentDist = calcDist(cell,checkPoint)
+    run.dist = currentDist
+    app.listMatting.insert(END,str(run.dist))
+    if(currentDist != 0):
+        currentDist = 1/currentDist
+    else:
+        #Meaning that's enough
+        currentDist = 10
+    #feedback.append(currentDist)
+    time.sleep(1)
+            
+            
+    #Back the variables up to work on the main variables
+    mapp = mappBackUp.copy()
+    cell = cellBackUp.copy()
+    app.butonsMatrix = butonsMatrixBackUp.copy()
+    print("myMindTester terminado")
 
 def fisics():
     count = 0
@@ -152,6 +216,16 @@ class Application:
         self.button.bind("<Button-1>",startThread)
         #self.button.bind("<Button-1>",run.createGeneration(count))
         self.button.pack()
+
+        self.btnSave = Button(self.frame1,text="save map")
+        self.btnSave.bind("<Button-1>",self.saveMap)
+        #self.button.bind("<Button-1>",run.createGeneration(count))
+        self.btnSave.pack(side='left')
+
+        self.btnMyMindTester = Button(self.frame1,text="run mappTest")
+        self.btnMyMindTester.bind("<Button-1>",startThreadMyMindTester)#lambda event:mindTester([3,1,2,4,2,3,0,1]))
+        #self.button.bind("<Button-1>",run.createGeneration(count))
+        self.btnMyMindTester.pack(side='left')
         
         self.workingPlace = Frame(master)
         self.workingPlace.pack(expand=True,fill=BOTH)
@@ -204,16 +278,26 @@ class Application:
     def onClose():
         print("g.a. dá tchau")
         #print(mapp)
-        #pk.dump(mapp,open("mapp.txt",'wb'))
         #myFisics._stop()
         root.destroy()
+    
+    def saveMap(self,event):
+        print("mappTeste salvo")
+        pk.dump(mapp,open("mappTest.txt",'wb'))
+
 
 myFisics = th.Thread(target=fisics, daemon=True)
 def startThread(self):
-    if(not myFisics._is_stopped):
+    if(myFisics._is_stopped):
         myFisics.start()
     else:
         myFisics._stop()
+myMindTester = th.Thread(target=mindTester, daemon=True)
+def startThreadMyMindTester(self):
+    if(myMindTester.is_alive):
+        myMindTester.start()
+    else:
+        myMindTester._stop()
 root = Tk()
 root.protocol("WM_DELETE_WINDOW",Application.onClose)
 app = Application(root)

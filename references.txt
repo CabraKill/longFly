@@ -16,5 +16,11 @@ https://stackoverflow.com/questions/47878587/python-accessing-widget-items-from-
 https://likegeeks.com/numpy-array-tutorial/
 https://stackoverflow.com/questions/930397/getting-the-last-element-of-a-list
 https://stackoverflow.com/questions/3989016/how-to-find-all-positions-of-the-maximum-value-in-a-list
-
-
+http://excript.com/python/potenciacao-radiciacao-python.html
+https://stackoverflow.com/questions/7872838/one-line-if-condition-assignment
+http://effbot.org/tkinterbook/listbox.htm
+https://stackoverflow.com/questions/32668087/how-to-place-buttons-left-and-on-top-of-each-other-python3-4-tkinter
+http://www.effbot.org/tkinterbook/pack.htm
+http://effbot.org/tkinterbook/listbox.htm
+http://zetcode.com/tkinter/layout/
+https://towardsdatascience.com/genetic-algorithm-implementation-in-python-5ab67bb124a6
