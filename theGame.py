@@ -94,11 +94,15 @@ def fisics():
     count = 0
     global mapp
     global cell
+    mappBackUp = mapp.copy()
+    cellBackUp = cell.copy()
+    butonsMatrixBackUp = app.butonsMatrix.copy()
     #Lookin for the best answer
     while True:
-        mappBackUp = mapp.copy()
-        cellBackUp = cell.copy()
-        butonsMatrixBackUp = app.butonsMatrix.copy()
+        #delete 3 lines bellow as soon as possible
+        #mappBackUp = mapp.copy()
+        #cellBackUp = cell.copy()
+        #butonsMatrixBackUp = app.butonsMatrix.copy()
         feedback = []
         #Running a generation
         #print("Current pop: " + str(count))
@@ -125,16 +129,16 @@ def fisics():
                 direction = myMind.moveDirection(dists,run.new_population[z][0:-4],prefCurrent,lasDirection)
                 #print("Distancias: {}. Direcao: {}".format(dists,direction))
                 if(direction == 0):
-                    if(not fisics_move_update(-1,0)):
+                    if(not fisics_move_update(-1,0,mappBackUp)):
                         break
                 elif (direction == 1):
-                    if(not fisics_move_update(1,0)):
+                    if(not fisics_move_update(1,0,mappBackUp)):
                         break
                 elif direction == 2:
-                    if(not fisics_move_update(0,-1)):
+                    if(not fisics_move_update(0,-1,mappBackUp)):
                         break
                 elif (direction == 3):
-                    if(not fisics_move_update(0,1)):
+                    if(not fisics_move_update(0,1,mappBackUp)):
                         break
                 elif(direction == 404):
                     break
@@ -179,7 +183,7 @@ def calcDist(a,b):
 
     return ((x2 - x1)**2 + (y2 - y1)**2)**(0.5)
 
-def fisics_move_update(horizontal,vertical):
+def fisics_move_update(horizontal,vertical,statelessMapp):
     #global app
     #print("Current cell: {} * h={} * v={}".format(myMind.cell,horizontal,vertical))
 
@@ -193,12 +197,22 @@ def fisics_move_update(horizontal,vertical):
     elif mapp[myMind.cell[0] +vertical][myMind.cell[1]+horizontal] == 1:
         return 0
     #Since it's ok, update the grid
+    
     #Updates the new point
     mapp[myMind.cell[0] + vertical][myMind.cell[1] + horizontal] == 2
     app.butonsMatrix[myMind.cell[0] + vertical][myMind.cell[1] + horizontal]['bg'] = 'red'
+    
     #Updates the current point
-    mapp[myMind.cell[0]][myMind.cell[1]] = 0
-    app.butonsMatrix[myMind.cell[0]][myMind.cell[1]]['bg'] = 'white'
+    cc = ['white','blue','red','green']
+    ccc = int(statelessMapp[myMind.cell[0]][myMind.cell[1]])
+    #line bellow to delete when possible
+    #mapp[myMind.cell[0]][myMind.cell[1]] = 0
+    mapp[myMind.cell[0]][myMind.cell[1]] = statelessMapp[myMind.cell[0]][myMind.cell[1]]
+    #line bellow to delete when possible
+    #app.butonsMatrix[myMind.cell[0]][myMind.cell[1]]['bg'] = 'white'
+    
+    #print(cc[ccc])
+    app.butonsMatrix[myMind.cell[0]][myMind.cell[1]]['bg'] =  cc[ccc]
     cell[0] += vertical
     cell[1] += horizontal
     return 1
